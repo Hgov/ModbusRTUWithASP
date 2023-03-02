@@ -38,15 +38,17 @@ $(".btnconnect").click(function () {
 
 $(".btnnewregister").click(function () {
     if (NModbus.Static.Connect.IsConnect) {
-        NModbus.Static.UpdateData.newvalue = $(".txtnewvalue").val();
+        NModbus.Static.UpdateData.newvalue = $(".txtnewvalue").val() * 100;
         NModbus.Static.UpdateData.offsetpoint = $(".txtoffsetpoint").val();
         Utility.WriteHoldingRegisters();
     }
 })
 
 $(".slctparameter").on('change', function () {
-    NModbus.Static.ParametersData.parameterspoint = this.value;
-    Utility.ParametersGetById();
+    Utility.ParameterItems(this.value);
+    Utility.ParametersGetById(this.value);
+    stop();
+    start();
 })
 /** Custom Button Events END*/
 
@@ -66,7 +68,30 @@ var Utility = (function () {
                     $(".modbusdatalist").empty();
                     NModbus.Static.Connect.IsConnect = true;
                     $.each(data.values, function (index, item) {
-                        $(".modbusdatalist").append('<tr><td><span class="tab">' + index + '</span></td><td></td><td>' + item + '</td></tr>');
+                        var parameteritem = JSON.parse(NModbus.Static.ParameterItemsRealData.data).filter(record => record.ordernumber == index);
+                        if (parameteritem.length != 0) {
+                            console.log(parameteritem[0].parameterid);
+                            $(".modbusdatalist").append('<tr>' +
+                                '<td><span class="tab">' + index + '</span></td>' +
+                                '<td>' + parameteritem[0].parameterno + '</td>' +
+                                '<td>' + parameteritem[0].text + '</td>' +
+                                '<td>' + (item / 100).toFixed(2) + ' ' + parameteritem[0].value + '</td>' +
+                                '<td>' + parameteritem[0].permission + '</td>' +
+                                '<td>' + parameteritem[0].description + '</td>' +
+                                '</tr>'
+                            );
+                        } else if (item > 0) {
+                            $(".modbusdatalist").append('<tr>' +
+                                '<td><span class="tab">' + index + '</span></td>' +
+                                '<td>-</td>' +
+                                '<td>-</td>' +
+                                '<td>' + (item / 100).toFixed(2) + '</td>' +
+                                '<td>-</td>' +
+                                '<td>-</td>' +
+                                '</tr>'
+                            );
+                        }
+
                     });
 
                 },
@@ -106,7 +131,6 @@ var Utility = (function () {
                 contentType: 'application/json',
                 data: '{}',
                 success: function (data, textStatus, xhr) {
-                    console.log(xhr.status);
                     $(".modbusconnectstate").html("");
                 },
                 complete: function (xhr, textStatus) {
@@ -149,9 +173,7 @@ var Utility = (function () {
                     var slctparameters = $(".slctparameter");
                     slctparameters.empty();
                     slctparameters.append("<option value=0>registered connect</option>");
-                    console.log(data);
                     $.each(data, function (i, item) {
-
                         slctparameters.append("<option value=" + item.id + ">" + item.name + "</option>");
                     });
                 },
@@ -162,7 +184,8 @@ var Utility = (function () {
                 }
             });
         },
-        ParametersGetById: function () {
+        ParametersGetById: function (parameterspoint) {
+            NModbus.Static.ParametersData.parameterspoint = parameterspoint;
             $.ajax({
                 url: ApiUrlParse("ParametersGetById"),
                 type: 'GET',
@@ -170,17 +193,35 @@ var Utility = (function () {
                 contentType: 'application/json',
                 data: '{}',
                 success: function (data, textStatus, xhr) {
-                    console.log("getbyid " + JSON.stringify(data.ipaddress));
                     NModbus.Static.Connect.ipaddress = data.ipaddress;
                     NModbus.Static.Connect.slave = data.slave;
                     NModbus.Static.Connect.number = data.number;
                     NModbus.Static.Connect.offset = data.offset;
                     NModbus.Static.Connect.port = data.port;
+
                     if (NModbus.Static.Connect.IsConnect) {
                         stop();
                     } else {
                         start();
                     }
+                },
+                complete: function (xhr, textStatus) {
+                },
+                Error: function (data) {
+                    $(".modbusconnectstate").html("Error");
+                }
+            });
+        },
+        ParameterItems: function (parameterid) {
+            $.ajax({
+                url: ApiUrlParse("ParameterItems"),
+                type: 'GET',
+                dataType: 'json',
+                contentType: 'application/json',
+                data: '{}',
+                success: function (data, textStatus, xhr) {
+                    NModbus.Static.ParameterItemsRealData.data = JSON.stringify(data.filter(record => record.parameterid == parameterid));
+                    // console.log(NModbus.Static.ParameterItemsRealData.data);
                 },
                 complete: function (xhr, textStatus) {
                 },
@@ -206,6 +247,9 @@ function ApiUrlParse(endpointparameter) {
         case "ParametersGetById":
             return window.location.protocol + "//" + window.location.host + '/api/Parameters/' + NModbus.Static.ParametersData.parameterspoint;
             break;
+        case "ParameterItems":
+            return window.location.protocol + "//" + window.location.host + '/api/ParameterItems';
+            break;
     }
 
 }
@@ -229,6 +273,9 @@ NModbus.Static = {
     },
     ParametersData: {
         parameterspoint: null
+    },
+    ParameterItemsRealData: {
+        data: null
     }
 }
     /** Static END */

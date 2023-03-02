@@ -110,6 +110,14 @@ namespace NModbusTCP.Controllers
                         isExistingData.text = request.text;
                     if (!string.IsNullOrWhiteSpace(request.value) && request.value != isExistingData.value)
                         isExistingData.value = request.value;
+                    if (request.ordernumber != null && request.ordernumber != isExistingData.ordernumber)
+                        isExistingData.ordernumber = request.ordernumber;
+                    if (!string.IsNullOrWhiteSpace(request.description) && request.description != isExistingData.description)
+                        isExistingData.description = request.description;
+                    if (!string.IsNullOrWhiteSpace(request.permission) && request.permission != isExistingData.permission)
+                        isExistingData.permission = request.permission;
+
+
                     var data = _parametersWithParameterItemsService.Update(isExistingData);
                     _parametersWithParameterItemsService.saveChanges();
                     return Ok(data);
