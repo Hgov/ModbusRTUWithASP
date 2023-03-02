@@ -1,7 +1,7 @@
 ﻿
 var NModbus = NModbus || {};
 $(document).ready(function () {
-   // Utility.Parameters();
+    Utility.Parameters();
 });
 
 var timer;
@@ -18,10 +18,6 @@ function stop() {
     $(".modbusdatalist").empty();
     $(".btnconnect").removeClass("btn-warning").addClass("btn-success").html("Connect");
 };
-
-
-$('#stop').click(stop);
-
 
 /** Custom Button Events*/
 $(".btnconnect").click(function () {
@@ -46,6 +42,11 @@ $(".btnnewregister").click(function () {
         NModbus.Static.UpdateData.offsetpoint = $(".txtoffsetpoint").val();
         Utility.WriteHoldingRegisters();
     }
+})
+
+$(".slctparameter").on('change', function () {
+    NModbus.Static.ParametersData.parameterspoint = this.value;
+    Utility.ParametersGetById();
 })
 /** Custom Button Events END*/
 
@@ -139,7 +140,7 @@ var Utility = (function () {
         },
         Parameters: function () {
             $.ajax({
-                url: ApiUrlParse("WriteHoldingRegisters"),
+                url: ApiUrlParse("Parameters"),
                 type: 'GET',
                 dataType: 'json',
                 contentType: 'application/json',
@@ -147,11 +148,39 @@ var Utility = (function () {
                 success: function (data, textStatus, xhr) {
                     var slctparameters = $(".slctparameter");
                     slctparameters.empty();
+                    slctparameters.append("<option value=0>registered connect</option>");
                     console.log(data);
-                    //$.each(data, function (i, item) {
+                    $.each(data, function (i, item) {
 
-                    //    slctparameters.append("<option value=" + item.categoryid + ">" + item.categoryname + "</option>");
-                    //});
+                        slctparameters.append("<option value=" + item.id + ">" + item.name + "</option>");
+                    });
+                },
+                complete: function (xhr, textStatus) {
+                },
+                Error: function (data) {
+                    $(".modbusconnectstate").html("Error");
+                }
+            });
+        },
+        ParametersGetById: function () {
+            $.ajax({
+                url: ApiUrlParse("ParametersGetById"),
+                type: 'GET',
+                dataType: 'json',
+                contentType: 'application/json',
+                data: '{}',
+                success: function (data, textStatus, xhr) {
+                    console.log("getbyid " + JSON.stringify(data.ipaddress));
+                    NModbus.Static.Connect.ipaddress = data.ipaddress;
+                    NModbus.Static.Connect.slave = data.slave;
+                    NModbus.Static.Connect.number = data.number;
+                    NModbus.Static.Connect.offset = data.offset;
+                    NModbus.Static.Connect.port = data.port;
+                    if (NModbus.Static.Connect.IsConnect) {
+                        stop();
+                    } else {
+                        start();
+                    }
                 },
                 complete: function (xhr, textStatus) {
                 },
@@ -170,6 +199,12 @@ function ApiUrlParse(endpointparameter) {
             break;
         case "WriteHoldingRegisters":
             return window.location.protocol + "//" + window.location.host + '/api/HoldingRegister/' + NModbus.Static.UpdateData.offsetpoint + '?data=' + NModbus.Static.UpdateData.newvalue + '&slave=' + NModbus.Static.Connect.slave;
+            break;
+        case "Parameters":
+            return window.location.protocol + "//" + window.location.host + '/api/Parameters';
+            break;
+        case "ParametersGetById":
+            return window.location.protocol + "//" + window.location.host + '/api/Parameters/' + NModbus.Static.ParametersData.parameterspoint;
             break;
     }
 
@@ -192,6 +227,8 @@ NModbus.Static = {
         newvalue: null,
         offsetpoint: null,
     },
-    Url: "https://localhost:44323/api/"
+    ParametersData: {
+        parameterspoint: null
+    }
 }
     /** Static END */
