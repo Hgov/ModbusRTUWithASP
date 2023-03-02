@@ -1,0 +1,73 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div style="height:30px" class="row"></div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">NModbusTCP Manual Connect</h3>
+            </div>
+            <div class="card-body">
+                <p class="card-text">Manually enter the information of the device you want to connect.</p>
+                <br />
+                <div class="row">
+                    <div class="col-md-3">
+                        <input type="text" class="txtipaddress form-control" placeholder="Ip address" />
+                    </div>
+                    <div class="col-md-3">
+                        <input type="text" class="txtport form-control" placeholder="Port" />
+                    </div>
+                    <div class="col-md-2">
+                        <input type="text" class="txtslaveid form-control" placeholder="Slave id" />
+                    </div>
+                    <div class="col-md-2">
+                        <input type="text" class="txtoffset form-control" placeholder="Offset" />
+                    </div>
+                    <div class="col-md-2">
+                        <input type="text" class="txtnumber form-control" placeholder="Number" />
+                    </div>
+                </div>
+                <br />
+                <a href="#" class="btnconnect btn btn-success">Connect</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div style="height:30px" class="row"></div>
+<div class="row">
+    <div class="col-md-3">
+        <table border="0" id="modbustable">
+            <tbody>
+                <tr><td><input type="text" class="txtoffsetpoint" placeholder="Offset" /></td></tr>
+                <tr><td><input type="text" class="txtnewvalue" placeholder="New Value" /></td></tr>
+                <tr><td><input type="button" class="btnnewregister btn btn-default" value="Change" /></td></tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="col-md-9" style="min-height:300px;align-content:center">
+        <span class="modbusconnectstate" style="text-align:center;color:darkred;font-size:large;font-weight:500;font-family:'Times New Roman', Times, serif"></span>
+        <table border="1" id="modbustable">
+            <thead>
+                <tr>
+                    <td style="width:50px">ID</td>
+                    <td style="width:auto">Alias</td>
+                    <td>Value</td>
+                </tr>
+            </thead>
+            <tbody class="modbusdatalist">
+            </tbody>
+        </table>
+
+    </div>
+</div>
+<br />
+@section Scripts {
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script src="~/js/NModbus.js" asp-append-version="true"></script>
+}
+
