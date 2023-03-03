@@ -26,7 +26,7 @@ $(".btnconnect").click(function () {
     NModbus.Static.Connect.number = $(".txtnumber").val();
     NModbus.Static.Connect.offset = $(".txtoffset").val();
     NModbus.Static.Connect.port = $(".txtport").val();
-
+    NModbus.Static.Connect.isauto = false;
     $(".btnconnect").removeClass("btn-success").addClass("btn-primary").html("Connecting");
 
     if (NModbus.Static.Connect.IsConnect) {
@@ -47,6 +47,11 @@ $(".btnnewregister").click(function () {
 $(".slctparameter").on('change', function () {
     Utility.ParameterItems(this.value);
     Utility.ParametersGetById(this.value);
+    NModbus.Static.Connect.isauto = true;
+    if (this.value == 0) {
+        stop();
+        return;
+    }
     stop();
     start();
 })
@@ -64,36 +69,44 @@ var Utility = (function () {
                 dataType: 'json',
                 data: '{}',
                 success: function (data, textStatus, xhr) {
-                    $(".modbusconnectstate").html("");
-                    $(".modbusdatalist").empty();
-                    NModbus.Static.Connect.IsConnect = true;
-                    $.each(data.values, function (index, item) {
-                        var parameteritem = JSON.parse(NModbus.Static.ParameterItemsRealData.data).filter(record => record.ordernumber == index);
-                        if (parameteritem.length != 0) {
-                            console.log(parameteritem[0].parameterid);
-                            $(".modbusdatalist").append('<tr>' +
-                                '<td><span class="tab">' + index + '</span></td>' +
-                                '<td>' + parameteritem[0].parameterno + '</td>' +
-                                '<td>' + parameteritem[0].text + '</td>' +
-                                '<td>' + (item / 100).toFixed(2) + ' ' + parameteritem[0].value + '</td>' +
-                                '<td>' + parameteritem[0].permission + '</td>' +
-                                '<td>' + parameteritem[0].description + '</td>' +
-                                '</tr>'
-                            );
-                        } else if (item > 0) {
-                            $(".modbusdatalist").append('<tr>' +
-                                '<td><span class="tab">' + index + '</span></td>' +
-                                '<td>-</td>' +
-                                '<td>-</td>' +
-                                '<td>' + (item / 100).toFixed(2) + '</td>' +
-                                '<td>-</td>' +
-                                '<td>-</td>' +
-                                '</tr>'
-                            );
-                        }
-
-                    });
-
+                    try {
+                        $(".modbusconnectstate").html("");
+                        $(".modbusdatalist").empty();
+                        NModbus.Static.Connect.IsConnect = true;
+                        $.each(data.values, function (index, item) {
+                            var parameteritem = 0;
+                            if (NModbus.Static.Connect.isauto == true) {
+                                parameteritem = JSON.parse(NModbus.Static.ParameterItemsRealData.data).filter(record => record.ordernumber == index);
+                                if (parameteritem.length != 0 && parameteritem != 0) {
+                                    console.log(parameteritem[0].parameterid);
+                                    $(".modbusdatalist").append('<tr>' +
+                                        '<td><span class="tab">' + index + '</span></td>' +
+                                        '<td>' + parameteritem[0].parameterno + '</td>' +
+                                        '<td>' + parameteritem[0].text + '</td>' +
+                                        '<td>' + (item / 100).toFixed(2) + ' ' + parameteritem[0].value + '</td>' +
+                                        '<td>' + parameteritem[0].permission + '</td>' +
+                                        '<td>' + parameteritem[0].description + '</td>' +
+                                        '</tr>'
+                                    );
+                                }
+                            }
+                            else {
+                                $(".modbusdatalist").append('<tr>' +
+                                    '<td><span class="tab">' + index + '</span></td>' +
+                                    '<td>-</td>' +
+                                    '<td>-</td>' +
+                                    '<td>' + (item / 100).toFixed(2) + '</td>' +
+                                    '<td>-</td>' +
+                                    '<td>-</td>' +
+                                    '</tr>'
+                                );
+                            }
+                        });
+                    } catch (err) {
+                        $(".modbusconnectstate").html(err.message);
+                        stop();
+                        return;
+                    }
                 },
                 complete: function (xhr, textStatus) {
                     if (xhr.status == "400") {
@@ -265,7 +278,8 @@ NModbus.Static = {
         slave: null,
         number: null,
         offset: null,
-        isconnect: false
+        isconnect: false,
+        isauto: false
     },
     UpdateData: {
         newvalue: null,
