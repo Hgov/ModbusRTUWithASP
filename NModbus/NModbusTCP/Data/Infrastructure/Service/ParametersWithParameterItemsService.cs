@@ -31,10 +31,10 @@ namespace NModbusTCP.Data.Infrastructure.Service
         }
         public void ParametersRemoveWithItems(int parameterid)
         {
-            var queryFind = _nModbusDbContext.parameterItems.Where(x=>x.parameterid==parameterid).FirstOrDefault();
+            var queryFind = _nModbusDbContext.parameterItems.Where(x=>x.parameterid==parameterid).ToList();
             if (queryFind != null)
             {
-                _nModbusDbContext.parameterItems.Remove(queryFind);
+                _nModbusDbContext.parameterItems.RemoveRange(queryFind);
                 _nModbusDbContext.SaveChanges();
             }
                 

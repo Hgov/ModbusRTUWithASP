@@ -41,7 +41,7 @@ namespace NModbusTCP.Controllers
             {
                 var data = await _parametersWithParameterItemsService.GetAllAsync();
                 if (data == null) return NotFound("record is not found!");
-                return Ok(data);
+                return Ok(data.OrderByDescending(x=>x.id));
             }
             catch (System.Exception ex)
             {
@@ -135,9 +135,9 @@ namespace NModbusTCP.Controllers
                 if (isExistingData == null) return NotFound("record is not found!");
                 else
                 {
+                    _parametersWithParameterItemsService.ParametersRemoveWithItems(id);
                     _parametersWithParameterItemsService.Remove(isExistingData);
                     _parametersWithParameterItemsService.saveChanges();
-                    _parametersWithParameterItemsService.ParametersRemoveWithItems(id);
                     return Ok("Remove Successfly!");
                 }
             }

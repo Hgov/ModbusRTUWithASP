@@ -1,14 +1,14 @@
 ﻿
 var NModbus = NModbus || {};
 $(document).ready(function () {
-    Utility.Parameters();
+    NModbus.Utility.Parameters();
 });
 
 var timer;
 
 function start() {
     $(".btnconnect").removeClass("btn-success").addClass("btn-warning").html("Disconnect");
-    Utility.ReadHoldingRegisters();
+    NModbus.Utility.ReadHoldingRegisters();
     timer = setTimeout(start, 1000);
 };
 
@@ -40,13 +40,13 @@ $(".btnnewregister").click(function () {
     if (NModbus.Static.Connect.IsConnect) {
         NModbus.Static.UpdateData.newvalue = $(".txtnewvalue").val() * 100;
         NModbus.Static.UpdateData.offsetpoint = $(".txtoffsetpoint").val();
-        Utility.WriteHoldingRegisters();
+        NModbus.Utility.WriteHoldingRegisters();
     }
 })
 
 $(".slctparameter").on('change', function () {
-    Utility.ParameterItems(this.value);
-    Utility.ParametersGetById(this.value);
+    NModbus.Utility.ParameterItems(this.value);
+    NModbus.Utility.ParametersGetById(this.value);
     NModbus.Static.Connect.isauto = true;
     if (this.value == 0) {
         stop();
@@ -59,7 +59,7 @@ $(".slctparameter").on('change', function () {
 
 
 /** Utility */
-var Utility = (function () {
+NModbus.Utility = (function () {
 
     return {
         ReadHoldingRegisters: function () {
