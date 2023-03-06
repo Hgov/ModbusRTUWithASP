@@ -64,12 +64,8 @@ namespace NModbusTCP
             });
             string path = Directory.GetCurrentDirectory();
             services.AddDbContext<NModbusDbContext>(options =>
-                            options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")
+                            options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection2")
                             .Replace("[DataDirectory]", path)));
-
-            //services.AddDbContext<NModbusDbContext>(options =>
-            // options.UseSqlServer(
-            //     Configuration.GetConnectionString("DefaultConnection")));
 
             // Adds MVC support.
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2)

@@ -38,7 +38,7 @@ $(".btnconnect").click(function () {
 
 $(".btnnewregister").click(function () {
     if (NModbus.Static.Connect.IsConnect) {
-        NModbus.Static.UpdateData.newvalue = $(".txtnewvalue").val() * 100;
+        NModbus.Static.UpdateData.newvalue = $(".txtnewvalue").val();
         NModbus.Static.UpdateData.offsetpoint = $(".txtoffsetpoint").val();
         NModbus.Utility.WriteHoldingRegisters();
     }
@@ -83,7 +83,7 @@ NModbus.Utility = (function () {
                                         '<td><span class="tab">' + index + '</span></td>' +
                                         '<td>' + parameteritem[0].parameterno + '</td>' +
                                         '<td>' + parameteritem[0].text + '</td>' +
-                                        '<td>' + (item / 100).toFixed(2) + ' ' + parameteritem[0].value + '</td>' +
+                                        '<td>' + parseFloat(item/100).toFixed(parameteritem[0].valueformat) + ' ' + parameteritem[0].value + '</td>' +
                                         '<td>' + parameteritem[0].permission + '</td>' +
                                         '<td>' + parameteritem[0].description + '</td>' +
                                         '</tr>'
@@ -95,7 +95,7 @@ NModbus.Utility = (function () {
                                     '<td><span class="tab">' + index + '</span></td>' +
                                     '<td>-</td>' +
                                     '<td>-</td>' +
-                                    '<td>' + (item / 100).toFixed(2) + '</td>' +
+                                    '<td>' + item + '</td>' +
                                     '<td>-</td>' +
                                     '<td>-</td>' +
                                     '</tr>'
@@ -234,7 +234,6 @@ NModbus.Utility = (function () {
                 data: '{}',
                 success: function (data, textStatus, xhr) {
                     NModbus.Static.ParameterItemsRealData.data = JSON.stringify(data.filter(record => record.parameterid == parameterid));
-                    // console.log(NModbus.Static.ParameterItemsRealData.data);
                 },
                 complete: function (xhr, textStatus) {
                 },

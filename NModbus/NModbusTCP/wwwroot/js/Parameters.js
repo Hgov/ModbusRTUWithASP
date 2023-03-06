@@ -54,6 +54,57 @@ function parameterdelete(e) {
     var parameterid = $(e).data("id");
     Parameters.Utility.ParameterDelete(parameterid);
 }
+function parameteritemcreate() {
+    var parameterno = $(".newparameterno").val();
+    var text = $(".newtext").val();
+    var value = $(".newvalue").val();
+    var valueformat = $(".newvalueformat").val();
+    var ordernumber = $(".newordernumber").val();
+    var permission = $(".newpermission").val();
+    var description = $(".newdescription").val();
+    var jsonData = {
+        "parameterid": parameterid,
+        "parameterno": parameterno,
+        "text": text,
+        "value": value,
+        "valueformat": valueformat,
+        "ordernumber": ordernumber,
+        "permission": permission,
+        "description": description
+    }
+    var arrayJsonData = [];
+    arrayJsonData.push(jsonData);
+    if (text == null || text == '') { alert('Parameter text field cannot be empty'); return; }
+    Parameters.Utility.ParameterItemCreate(arrayJsonData);
+}
+function parameteritemedit(e) {
+    var row = $(e).closest("tr");
+     parameteritemid = $(e).data("id");
+    var parameterid = $(e).data("parameterid");
+    var parameterno = row.find(".parameterno").val();
+    var text = row.find(".text").val();
+    var value = row.find(".value").val();
+    var valueformat = row.find(".valueformat").val();
+    var ordernumber = row.find(".ordernumber").val();
+    var permission = row.find(".permission").val();
+    var description = row.find(".description").val();
+    var jsonData = {
+        "parameterid":parameterid,
+        "parameterno": parameterno,
+        "text": text,
+        "value": value,
+        "valueformat": valueformat,
+        "ordernumber": ordernumber,
+        "permission": permission,
+        "description": description
+    }
+    Parameters.Utility.ParameterItemEdit(parameterid, jsonData);
+}
+function parameteritemdelete(e) {
+    parameteritemid = $(e).data("id");
+    var parameterid = $(e).data("parameterid");
+    Parameters.Utility.ParameterItemDelete(parameterid);
+}
 
 /** Custom Button Events END*/
 
@@ -115,7 +166,7 @@ Parameters.Utility = (function () {
                 '<td><input type="text" class="form-control offset" value="' + item.offset + '"></input></td>' +
                 '<td><input type="text" class="form-control port" value="' + item.port + '"></input></td>' +
                 '<td><input type="text" class="form-control slave" value="' + item.slave + '"></input></td>' +
-                '<td><div class="col"><input type="button" class="form-control btn btn-primary" onClick="parameteredit(this)" data-id="' + item.id + '" value="Edit"></input></div></td>'+
+                '<td><div class="col"><input type="button" class="form-control btn btn-primary" onClick="parameteredit(this)" data-id="' + item.id + '" value="Edit"></input></div></td>' +
                 '<td><div class="col"><input type="button" class="form-control btn btn-warning" onClick="parameterdelete(this)" data-id="' + item.id + '" value=" Item Delete"></input></div></td>' +
                 '</tr>'
                 ;
@@ -135,6 +186,7 @@ Parameters.Utility = (function () {
     var ParameterEdit = function (parameterid, ParameterRequestData) {
         $.ajax({
             url: ApiUrlParse("ParameterEdit"),
+            headers: { 'Content-Type': 'application/json' },
             type: 'PUT',
             dataType: 'json',
             contentType: 'application/json',
@@ -150,7 +202,7 @@ Parameters.Utility = (function () {
                 setTimeout(function () {
                     $(".isstate").hide();
                 }, 2000);
-                
+
             },
             complete: function (xhr, textStatus) {
 
@@ -163,6 +215,7 @@ Parameters.Utility = (function () {
     var ParameterDelete = function (parameterid) {
         $.ajax({
             url: ApiUrlParse("ParameterDelete"),
+            headers: { 'Access-Control-Allow-Methods': 'GET, POST,PUT, DELETE' },
             type: 'DELETE',
             dataType: 'json',
             contentType: 'application/json',
@@ -223,38 +276,144 @@ Parameters.Utility = (function () {
                 var html = '';
                 var row = '';
                 $(".parametermodalbody").empty();
-
+                var htmlItemCreate = '<div class="row">' +
+                    '    <div class="col-md-12">' +
+                    '        <table class="table newparameter">' +
+                    '            <thead>' +
+                    '                <tr>' +
+                    '                    <th>parameterno</th>' +
+                    '                    <th>text</th>' +
+                    '                    <th>value</th>' +
+                    '                    <th>valueformat</th>' +
+                    '                    <th>ordernumber</th>' +
+                    '                    <th>permission</th>' +
+                    '                    <th>description</th>' +
+                    '                </tr>' +
+                    '            </thead>' +
+                    '            <tbody>' +
+                    '                <tr>' +
+                    '                    <td><input type="text" class="form-control newparameterno" value="" /></td>' +
+                    '                    <td><input type="text" class="form-control newtext" value="" /></td>' +
+                    '                    <td><input type="text" class="form-control newvalue" value="" /></td>' +
+                    '                    <td><input type="text" class="form-control newvalueformat" value="" /></td>' +
+                    '                    <td><input type="text" class="form-control newordernumber" value="" /></td>' +
+                    '                    <td><input type="text" class="form-control newpermission" value="" /></td>' +
+                    '                    <td><input type="text" class="form-control newdescription" value="" /></td>' +
+                    '                    <td><input type="button" class="btn btn-success" onclick="parameteritemcreate(this)" value="Add Item" /></td>' +
+                    '                </tr>' +
+                    '            </tbody>' +
+                    '        </table>' +
+                    '    </div>' +
+                    '</div>' +
+                    '<br />';
+                $(".parametermodalbody").append(htmlItemCreate);
                 $.each(data.filter(record => record.parameterid == parameterid), function (index, item) {
                     row += '<tr>' +
                         '<td><input type="text" class="form-control parameterno" value="' + item.parameterno + '"></input></td>' +
                         '<td><input type="text" class="form-control text" value="' + item.text + '"></input></td>' +
                         '<td><input type="text" class="form-control value" value="' + item.value + '"></input></td>' +
+                        '<td><input type="text" class="form-control valueformat" value="' + item.valueformat + '"></input></td>' +
                         '<td><input type="text" class="form-control ordernumber" value="' + item.ordernumber + '"></input></td>' +
                         '<td><input type="text" class="form-control permission" value="' + item.permission + '"></input></td>' +
                         '<td><input type="text" class="form-control description" value="' + item.description + '"></input></td>' +
-                        '<td><div class="col"><input type="button" class="form-control btn btn-primary btnparameteritemedit" data-id="' + item.id + '" value="Edit"></input></div></td>' +
-                        '<td><div class="col"><input type="button" class="form-control btn btn-warning btnparameteritemdelete" data-id="' + item.id + '" value=" Item Delete"></input></div></td>' +
+                        '<td><div class="col"><input type="button" class="form-control btn btn-primary" onClick="parameteritemedit(this)" data-id="' + item.id + '" data-parameterid="' + item.parameterid + '" value="Edit"></input></div></td>' +
+                        '<td><div class="col"><input type="button" class="form-control btn btn-warning" onClick="parameteritemdelete(this)" data-id="' + item.id + '" data-parameterid="' + item.parameterid + '" value=" Item Delete"></input></div></td>' +
                         '</tr>'
                         ;
                 })
-                html = '<br/><table class="table"><thead>' +
+                html = '<br/><div class="row"><table class="table"><thead>' +
                     '<tr>' +
                     '<th>parameterno</th>' +
                     '<th>text</th>' +
                     '<th>value</th>' +
+                    '<th>valueformat</th>' +
                     '<th>ordernumber</th>' +
                     '<th>permission</th>' +
                     '<th>description</th>' +
                     '</tr>' +
-                    '</thead>' + row + '</table>'
+                    '</thead>' + row + '</table></div>'
                 $(".parametermodalbody").append(html);
             },
             complete: function (xhr, textStatus) {
             },
             Error: function (data) {
-                $(".modbusconnectstate").html("Error");
             }
         });
+    }
+    var ParameterItemEdit = function (parameterid, ParameterItemRequestData) {
+        $.ajax({
+            url: ApiUrlParse("ParameterItemEdit"),
+            type: 'PUT',
+            dataType: 'json',
+            contentType: 'application/json',
+            data: JSON.stringify(ParameterItemRequestData),
+            success: function (data, textStatus, xhr) {
+                FetchParameter();
+                setTimeout(function () {
+                    ParameterItemView(parameterid);
+                }, 500);
+                $(".isstate").html("Edit Success!");
+                $(".isstate").css("color", "green");
+                $(".isstate").show();
+                setTimeout(function () {
+                    $(".isstate").hide();
+                }, 2000);
+
+            },
+            complete: function (xhr, textStatus) {
+
+            },
+            Error: function (data) {
+                $(".modbusconnectstate").html("Error");
+            }
+        })
+    }
+    var ParameterItemDelete = function (parameterid) {
+        $.ajax({
+            url: ApiUrlParse("ParameterItemDelete"),
+            type: 'DELETE',
+            dataType: 'json',
+            contentType: 'application/json',
+            data: '',
+            success: function (data, textStatus, xhr) {
+                FetchParameter();
+                setTimeout(function () {
+                    ParameterItemView(parameterid);
+                }, 1000);
+                $(".isstate").html("Delete Success!");
+                $(".isstate").css("color", "green");
+                $(".isstate").show();
+                setTimeout(function () {
+                    $(".isstate").hide();
+                }, 2000);
+
+            },
+            complete: function (xhr, textStatus) {
+
+            },
+            Error: function (data) {
+                $(".modbusconnectstate").html("Error");
+            }
+        })
+    }
+    var ParameterItemCreate = function (ParameterItemRequestData) {
+        $.ajax({
+            url: ApiUrlParse("ParameterItemCreate"),
+            type: 'POST',
+            dataType: 'json',
+            contentType: 'application/json',
+            data: JSON.stringify(ParameterItemRequestData),
+            success: function (data, textStatus, xhr) {
+                FetchParameter();
+                ParameterItemView(parameterid);
+            },
+            complete: function (xhr, textStatus) {
+
+            },
+            Error: function (data) {
+                alert(data.message);
+            }
+        })
     }
     return {
         FetchParameter,
@@ -263,6 +422,9 @@ Parameters.Utility = (function () {
         ParameterDelete,
         ParameterCreate,
         ParameterItemView,
+        ParameterItemEdit,
+        ParameterItemDelete,
+        ParameterItemCreate
     }
 })();
 function ApiUrlParse(endpointparameter) {
@@ -270,9 +432,6 @@ function ApiUrlParse(endpointparameter) {
     switch (endpointparameter) {
         case "Parameters":
             return window.location.protocol + "//" + window.location.host + '/api/Parameters';
-            break;
-        case "ParameterItems":
-            return window.location.protocol + "//" + window.location.host + '/api/ParameterItems';
             break;
         case "ParameterEdit":
             return window.location.protocol + "//" + window.location.host + '/api/Parameters/' + parameterid;
@@ -283,8 +442,17 @@ function ApiUrlParse(endpointparameter) {
         case "ParameterCreate":
             return window.location.protocol + "//" + window.location.host + '/api/Parameters';
             break;
+        case "ParameterItems":
+            return window.location.protocol + "//" + window.location.host + '/api/ParameterItems';
+            break;
         case "ParameterItemEdit":
-            return window.location.protocol + "//" + window.location.host + '/api/ParameterItems/' + parameterItemid;
+            return window.location.protocol + "//" + window.location.host + '/api/ParameterItems/' + parameteritemid;
+            break;
+        case "ParameterItemDelete":
+            return window.location.protocol + "//" + window.location.host + '/api/ParameterItems/' + parameteritemid;
+            break;
+        case "ParameterItemCreate":
+            return window.location.protocol + "//" + window.location.host + '/api/ParameterItems';
             break;
     }
 

@@ -110,6 +110,8 @@ namespace NModbusTCP.Controllers
                         isExistingData.text = request.text;
                     if (!string.IsNullOrWhiteSpace(request.value) && request.value != isExistingData.value)
                         isExistingData.value = request.value;
+                    if (request.valueformat != null && request.valueformat != isExistingData.valueformat)
+                        isExistingData.valueformat = request.valueformat;
                     if (request.ordernumber != null && request.ordernumber != isExistingData.ordernumber)
                         isExistingData.ordernumber = request.ordernumber;
                     if (!string.IsNullOrWhiteSpace(request.description) && request.description != isExistingData.description)
