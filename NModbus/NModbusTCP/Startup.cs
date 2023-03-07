@@ -101,6 +101,7 @@ namespace NModbusTCP
             {
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
+                app.UseHttpsRedirection();
             }
             else
             {
@@ -109,7 +110,7 @@ namespace NModbusTCP
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            
             app.UseStaticFiles();
             app.UseCookiePolicy();
 

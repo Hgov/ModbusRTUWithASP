@@ -79,7 +79,7 @@ function parameteritemcreate() {
 }
 function parameteritemedit(e) {
     var row = $(e).closest("tr");
-     parameteritemid = $(e).data("id");
+    parameteritemid = $(e).data("id");
     var parameterid = $(e).data("parameterid");
     var parameterno = row.find(".parameterno").val();
     var text = row.find(".text").val();
@@ -89,7 +89,7 @@ function parameteritemedit(e) {
     var permission = row.find(".permission").val();
     var description = row.find(".description").val();
     var jsonData = {
-        "parameterid":parameterid,
+        "parameterid": parameterid,
         "parameterno": parameterno,
         "text": text,
         "value": value,
@@ -115,6 +115,7 @@ Parameters.Utility = (function () {
         $.ajax({
             url: ApiUrlParse("Parameters"),
             type: 'GET',
+            async: false,
             dataType: 'json',
             contentType: 'application/json',
             data: '{}',
@@ -186,16 +187,14 @@ Parameters.Utility = (function () {
     var ParameterEdit = function (parameterid, ParameterRequestData) {
         $.ajax({
             url: ApiUrlParse("ParameterEdit"),
-            headers: { 'Content-Type': 'application/json' },
+            async: false,
             type: 'PUT',
             dataType: 'json',
             contentType: 'application/json',
             data: JSON.stringify(ParameterRequestData),
             success: function (data, textStatus, xhr) {
                 FetchParameter();
-                setTimeout(function () {
-                    ParameterView(parameterid);
-                }, 500);
+                ParameterView(parameterid);
                 $(".isstate").html("Edit Success!");
                 $(".isstate").css("color", "green");
                 $(".isstate").show();
@@ -215,17 +214,15 @@ Parameters.Utility = (function () {
     var ParameterDelete = function (parameterid) {
         $.ajax({
             url: ApiUrlParse("ParameterDelete"),
-            headers: { 'Access-Control-Allow-Methods': 'GET, POST,PUT, DELETE' },
             type: 'DELETE',
+            async: false,
             dataType: 'json',
             contentType: 'application/json',
             data: '',
             success: function (data, textStatus, xhr) {
                 FetchParameter();
-                setTimeout(function () {
-                    ParameterView(parameterid);
-                    $(".parameterModal .close").click();
-                }, 1000);
+                ParameterView(parameterid);
+                $(".parameterModal .close").click();
                 $(".isstate").html("Delete Success!");
                 $(".isstate").css("color", "green");
                 $(".isstate").show();
@@ -247,6 +244,7 @@ Parameters.Utility = (function () {
             url: ApiUrlParse("ParameterCreate"),
             type: 'POST',
             dataType: 'json',
+            async: false,
             contentType: 'application/json',
             data: JSON.stringify(ParameterRequestData),
             success: function (data, textStatus, xhr) {
@@ -269,6 +267,7 @@ Parameters.Utility = (function () {
         $.ajax({
             url: ApiUrlParse("ParameterItems"),
             type: 'GET',
+            async: false,
             dataType: 'json',
             contentType: 'application/json',
             data: '{}',
@@ -345,13 +344,12 @@ Parameters.Utility = (function () {
             url: ApiUrlParse("ParameterItemEdit"),
             type: 'PUT',
             dataType: 'json',
+            async: false,
             contentType: 'application/json',
             data: JSON.stringify(ParameterItemRequestData),
             success: function (data, textStatus, xhr) {
                 FetchParameter();
-                setTimeout(function () {
-                    ParameterItemView(parameterid);
-                }, 500);
+                ParameterItemView(parameterid);
                 $(".isstate").html("Edit Success!");
                 $(".isstate").css("color", "green");
                 $(".isstate").show();
@@ -372,14 +370,13 @@ Parameters.Utility = (function () {
         $.ajax({
             url: ApiUrlParse("ParameterItemDelete"),
             type: 'DELETE',
+            async: false,
             dataType: 'json',
             contentType: 'application/json',
             data: '',
             success: function (data, textStatus, xhr) {
                 FetchParameter();
-                setTimeout(function () {
                     ParameterItemView(parameterid);
-                }, 1000);
                 $(".isstate").html("Delete Success!");
                 $(".isstate").css("color", "green");
                 $(".isstate").show();
@@ -400,6 +397,7 @@ Parameters.Utility = (function () {
         $.ajax({
             url: ApiUrlParse("ParameterItemCreate"),
             type: 'POST',
+            async: false,
             dataType: 'json',
             contentType: 'application/json',
             data: JSON.stringify(ParameterItemRequestData),
