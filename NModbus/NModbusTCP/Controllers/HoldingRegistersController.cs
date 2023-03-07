@@ -62,7 +62,7 @@ namespace NModbusTCP.Controllers
         [ProducesResponseType(typeof(string), 404)]
         [ProducesResponseType(typeof(string), 500)]
         [ProducesResponseType(typeof(string), 502)]
-        public async Task<IActionResult> ReadHoldingRegistersAsync(ushort offset = 0, ushort number = 1, byte? slave = null,string ipaddress="",ushort port=0)
+        public async Task<IActionResult> ReadHoldingRegistersAsync(ushort offset = 0, ushort number = 1, byte? slave = null, string ipaddress = "", ushort port = 0)
         {
             _client.TcpSlave.Address = ipaddress;
             _client.TcpSlave.Port = port;

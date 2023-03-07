@@ -1,19 +1,13 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using NModbusLib;
-using NModbusTCP.Data.Entities;
-using NModbusTCP.Data.Infrastructure.Repository;
-using NModbusTCP.Data.Maps;
+﻿using Microsoft.AspNetCore.Mvc;
 using NModbusTCP.Data;
+using NModbusTCP.Data.Entities;
+using NModbusTCP.Data.Infrastructure.Service;
+using NModbusTCP.Data.Maps;
 using NModbusTCP.Models;
 using Swashbuckle.AspNetCore.Annotations;
-using Swashbuckle.AspNetCore.Swagger;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using NModbusTCP.Data.Infrastructure.Service;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace NModbusTCP.Controllers
 {
@@ -41,7 +35,7 @@ namespace NModbusTCP.Controllers
             {
                 var data = await _parametersWithParameterItemsService.GetAllAsync();
                 if (data == null) return NotFound("record is not found!");
-                return Ok(data.OrderByDescending(x=>x.id));
+                return Ok(data.OrderByDescending(x => x.id));
             }
             catch (System.Exception ex)
             {

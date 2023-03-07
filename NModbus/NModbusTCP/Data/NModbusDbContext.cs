@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NModbusTCP.Data.Entities;
-using System.Reflection.Metadata;
 
 namespace NModbusTCP.Data
 {

@@ -1,16 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using NModbusTCP.Data.Entities;
-using NModbusTCP.Data.Infrastructure.Repository;
-using NModbusTCP.Data.Maps;
+﻿using Microsoft.AspNetCore.Mvc;
 using NModbusTCP.Data;
+using NModbusTCP.Data.Entities;
+using NModbusTCP.Data.Infrastructure.Service;
+using NModbusTCP.Data.Maps;
 using NModbusTCP.Models;
 using Swashbuckle.AspNetCore.Annotations;
-using Swashbuckle.AspNetCore.Swagger;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using NModbusTCP.Data.Infrastructure.Service;
-using Microsoft.EntityFrameworkCore;
 
 namespace NModbusTCP.Controllers
 {

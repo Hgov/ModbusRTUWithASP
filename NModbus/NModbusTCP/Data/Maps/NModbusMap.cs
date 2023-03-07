@@ -41,7 +41,7 @@ namespace NModbusTCP.Data.Maps
                 parameterno = request.parameterno,
                 text = request.text,
                 value = request.value,
-                valueformat= request.valueformat,
+                valueformat = request.valueformat,
                 description = request.description,
                 ordernumber = request.ordernumber,
                 permission = request.permission,

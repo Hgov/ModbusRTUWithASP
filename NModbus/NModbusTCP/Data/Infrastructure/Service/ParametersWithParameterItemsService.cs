@@ -1,11 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
-using NModbusTCP.Data.Entities;
 using NModbusTCP.Data.Infrastructure.Repository;
-using NModbusTCP.Models;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace NModbusTCP.Data.Infrastructure.Service
 {
@@ -14,7 +10,7 @@ namespace NModbusTCP.Data.Infrastructure.Service
         private readonly NModbusDbContext _nModbusDbContext;
         public ParametersWithParameterItemsService(NModbusDbContext nModbusDbContext) : base(nModbusDbContext)
         {
-            _nModbusDbContext= nModbusDbContext;
+            _nModbusDbContext = nModbusDbContext;
         }
 
 
@@ -26,18 +22,18 @@ namespace NModbusTCP.Data.Infrastructure.Service
         }
         public bool ParametersIsExisting(int id)
         {
-            var query = _nModbusDbContext.parameters.Where(x=>x.id==id).Any();
+            var query = _nModbusDbContext.parameters.Where(x => x.id == id).Any();
             return query;
         }
         public void ParametersRemoveWithItems(int parameterid)
         {
-            var queryFind = _nModbusDbContext.parameterItems.Where(x=>x.parameterid==parameterid).ToList();
+            var queryFind = _nModbusDbContext.parameterItems.Where(x => x.parameterid == parameterid).ToList();
             if (queryFind != null)
             {
                 _nModbusDbContext.parameterItems.RemoveRange(queryFind);
                 _nModbusDbContext.SaveChanges();
             }
-                
+
         }
     }
 }

@@ -110,7 +110,7 @@ namespace NModbusTCP
                 app.UseHsts();
             }
 
-            
+
             app.UseStaticFiles();
             app.UseCookiePolicy();
 
