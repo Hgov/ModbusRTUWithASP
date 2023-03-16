@@ -64,8 +64,7 @@ namespace NModbusTCP
             });
             string path = Directory.GetCurrentDirectory();
             services.AddDbContext<NModbusDbContext>(options =>
-                            options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection1")
-                            .Replace("[DataDirectory]", path)));
+                            options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection4")));
 
 
             //services.AddDbContext<NModbusDbContext>(options =>

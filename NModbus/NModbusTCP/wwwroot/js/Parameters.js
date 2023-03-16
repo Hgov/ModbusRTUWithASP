@@ -376,7 +376,7 @@ Parameters.Utility = (function () {
             data: '',
             success: function (data, textStatus, xhr) {
                 FetchParameter();
-                    ParameterItemView(parameterid);
+                ParameterItemView(parameterid);
                 $(".isstate").html("Delete Success!");
                 $(".isstate").css("color", "green");
                 $(".isstate").show();

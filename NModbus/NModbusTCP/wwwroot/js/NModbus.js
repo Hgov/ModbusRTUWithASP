@@ -1,5 +1,8 @@
 ﻿
 var NModbus = NModbus || {};
+/** variables */
+
+/** variables */
 $(document).ready(function () {
     NModbus.Utility.Parameters();
 });
@@ -53,195 +56,204 @@ $(".slctparameter").on('change', function () {
         return;
     }
     stop();
-    start();
+    setTimeout(function () {
+        start();
+    }, 200);
+
 })
 /** Custom Button Events END*/
 
 
 /** Utility */
 NModbus.Utility = (function () {
-
-    return {
-        ReadHoldingRegisters: function () {
-            $.ajax({
-                url: ApiUrlParse("ReadHoldingRegisters"),//2?number=1&slave=1&ipaddress=127.0.0.1&port=502
-                type: 'GET',
-                dataType: 'json',
-                data: '{}',
-                success: function (data, textStatus, xhr) {
-                    try {
-                        $(".modbusconnectstate").html("");
-                        $(".modbusdatalist").empty();
-                        NModbus.Static.Connect.IsConnect = true;
-                        $.each(data.values, function (index, item) {
-                            var parameteritem = 0;
-                            if (NModbus.Static.Connect.isauto == true) {
-                                parameteritem = JSON.parse(NModbus.Static.ParameterItemsRealData.data).filter(record => record.ordernumber == index);
-                                if (parameteritem.length != 0 && parameteritem != 0) {
-                                    console.log(parameteritem[0].parameterid);
-                                    $(".modbusdatalist").append('<tr>' +
-                                        '<td><span class="tab">' + index + '</span></td>' +
-                                        '<td>' + parameteritem[0].parameterno + '</td>' +
-                                        '<td>' + parameteritem[0].text + '</td>' +
-                                        '<td>' + parseFloat(item/100).toFixed(parameteritem[0].valueformat) + ' ' + parameteritem[0].value + '</td>' +
-                                        '<td>' + parameteritem[0].permission + '</td>' +
-                                        '<td>' + parameteritem[0].description + '</td>' +
-                                        '</tr>'
-                                    );
-                                }
-                            }
-                            else {
+    var ReadHoldingRegisters = function () {
+        $.ajax({
+            url: ApiUrlParse("ReadHoldingRegisters"),//2?number=1&slave=1&ipaddress=127.0.0.1&port=502
+            type: 'GET',
+            dataType: 'json',
+            data: '{}',
+            success: function (data, textStatus, xhr) {
+                try {
+                    $(".modbusconnectstate").html("");
+                    $(".modbusdatalist").empty();
+                    NModbus.Static.Connect.IsConnect = true;
+                    NModbus.Static.counter = NModbus.Static.Connect.offset;
+                    $.each(data.values, function (index, item) {
+                        var parameteritem = 0;
+                        if (NModbus.Static.Connect.isauto == true) {
+                            parameteritem = JSON.parse(NModbus.Static.ParameterItemsRealData.data).filter(record => record.ordernumber == index);
+                            console.log(JSON.stringify(parameteritem));
+                            if (parameteritem.length != 0 && parameteritem != 0) {
+                                console.log(parameteritem[0].parameterid);
                                 $(".modbusdatalist").append('<tr>' +
-                                    '<td><span class="tab">' + index + '</span></td>' +
-                                    '<td>-</td>' +
-                                    '<td>-</td>' +
-                                    '<td>' + item + '</td>' +
-                                    '<td>-</td>' +
-                                    '<td>-</td>' +
+                                    '<td><span class="tab">' + NModbus.Static.counter++ + '</span></td>' +
+                                    '<td>' + parameteritem[0].parameterno + '</td>' +
+                                    '<td>' + parameteritem[0].text + '</td>' +
+                                    '<td>' + parseFloat(item / 100).toFixed(parameteritem[0].valueformat) + ' ' + parameteritem[0].value + '</td>' +
+                                    '<td>' + parameteritem[0].permission + '</td>' +
+                                    '<td>' + parameteritem[0].description + '</td>' +
                                     '</tr>'
                                 );
                             }
-                        });
-                    } catch (err) {
-                        $(".modbusconnectstate").html(err.message);
-                        stop();
-                        return;
-                    }
-                },
-                complete: function (xhr, textStatus) {
-                    if (xhr.status == "400") {
-                        $(".modbusconnectstate").html("the Modbus gateway cannot open the COM port.");
-                        stop();
-                    }
-                    if (xhr.status == "403") {
-                        $(".modbusconnectstate").html("the Modbus gateway has no access to the COM port.");
-                        stop();
-                    }
-                    if (xhr.status == "404") {
-                        $(".modbusconnectstate").html("the Modbus gateway cannot connect to the slave.");
-                        stop();
-                    }
-                    if (xhr.status == "500") {
-                        $(".modbusconnectstate").html("an error or an unexpected exception occurs.");
-                        stop();
-                    }
-                    if (xhr.status == "502") {
-                        $(".modbusconnectstate").html("an unexpected exception occurs in the slave.");
-                        stop();
-                    }
-                },
-                Error: function (data) {
-                    $(".modbusconnectstate").html("Error");
+                        }
+                        else {
+                            $(".modbusdatalist").append('<tr>' +
+                                '<td><span class="tab">' + NModbus.Static.counter++ + '</span></td>' +
+                                '<td>-</td>' +
+                                '<td>-</td>' +
+                                '<td>' + item + '</td>' +
+                                '<td>-</td>' +
+                                '<td>-</td>' +
+                                '</tr>'
+                            );
+                        }
+                    });
+                } catch (err) {
+                    $(".modbusconnectstate").html(err.message);
+                    stop();
+                    return;
+                }
+            },
+            complete: function (xhr, textStatus) {
+                if (xhr.status == "400") {
+                    $(".modbusconnectstate").html("the Modbus gateway cannot open the COM port.");
                     stop();
                 }
-            })
-        },
-        WriteHoldingRegisters: function () {
-            $.ajax({
-                url: ApiUrlParse("WriteHoldingRegisters"),
-                type: 'PUT',
-                dataType: 'json',
-                contentType: 'application/json',
-                data: '{}',
-                success: function (data, textStatus, xhr) {
-                    $(".modbusconnectstate").html("");
-                },
-                complete: function (xhr, textStatus) {
-                    if (xhr.status == "400") {
-                        $(".modbusconnectstate").html("the Modbus gateway cannot open the COM port.");
-                        $(".modbusdatalist").empty();
-                    }
-                    if (xhr.status == "403") {
-                        $(".modbusconnectstate").html("the Modbus gateway has no access to the COM port.");
-                        $(".modbusdatalist").empty();
-                    }
-                    if (xhr.status == "404") {
-                        $(".modbusconnectstate").html("the Modbus gateway cannot connect to the slave.");
-                        $(".modbusdatalist").empty();
-                    }
-                    if (xhr.status == "500") {
-                        $(".modbusconnectstate").html("an error or an unexpected exception occurs.");
-                        $(".modbusdatalist").empty();
-                    }
-                    if (xhr.status == "502") {
-                        $(".modbusconnectstate").html("an unexpected exception occurs in the slave.");
-                        $(".modbusdatalist").empty();
-                    }
-                },
-                Error: function (data) {
-                    $(".modbusconnectstate").html("Error");
+                if (xhr.status == "403") {
+                    $(".modbusconnectstate").html("the Modbus gateway has no access to the COM port.");
+                    stop();
+                }
+                if (xhr.status == "404") {
+                    $(".modbusconnectstate").html("the Modbus gateway cannot connect to the slave.");
+                    stop();
+                }
+                if (xhr.status == "500") {
+                    $(".modbusconnectstate").html("an error or an unexpected exception occurs.");
+                    stop();
+                }
+                if (xhr.status == "502") {
+                    $(".modbusconnectstate").html("an unexpected exception occurs in the slave.");
+                    stop();
+                }
+            },
+            Error: function (data) {
+                $(".modbusconnectstate").html("Error");
+                stop();
+            }
+        })
+    }
+    var WriteHoldingRegisters = function () {
+        $.ajax({
+            url: ApiUrlParse("WriteHoldingRegisters"),
+            type: 'PUT',
+            dataType: 'json',
+            contentType: 'application/json',
+            data: '{}',
+            success: function (data, textStatus, xhr) {
+                $(".modbusconnectstate").html("");
+            },
+            complete: function (xhr, textStatus) {
+                if (xhr.status == "400") {
+                    $(".modbusconnectstate").html("the Modbus gateway cannot open the COM port.");
                     $(".modbusdatalist").empty();
                 }
-            })
+                if (xhr.status == "403") {
+                    $(".modbusconnectstate").html("the Modbus gateway has no access to the COM port.");
+                    $(".modbusdatalist").empty();
+                }
+                if (xhr.status == "404") {
+                    $(".modbusconnectstate").html("the Modbus gateway cannot connect to the slave.");
+                    $(".modbusdatalist").empty();
+                }
+                if (xhr.status == "500") {
+                    $(".modbusconnectstate").html("an error or an unexpected exception occurs.");
+                    $(".modbusdatalist").empty();
+                }
+                if (xhr.status == "502") {
+                    $(".modbusconnectstate").html("an unexpected exception occurs in the slave.");
+                    $(".modbusdatalist").empty();
+                }
+            },
+            Error: function (data) {
+                $(".modbusconnectstate").html("Error");
+                $(".modbusdatalist").empty();
+            }
+        })
 
-        },
-        Parameters: function () {
-            $.ajax({
-                url: ApiUrlParse("Parameters"),
-                type: 'GET',
-                dataType: 'json',
-                contentType: 'application/json',
-                data: '{}',
-                success: function (data, textStatus, xhr) {
-                    var slctparameters = $(".slctparameter");
-                    slctparameters.empty();
-                    slctparameters.append("<option value=0>registered connect</option>");
-                    $.each(data, function (i, item) {
-                        slctparameters.append("<option value=" + item.id + ">" + item.name + "</option>");
-                    });
-                },
-                complete: function (xhr, textStatus) {
-                },
-                Error: function (data) {
-                    $(".modbusconnectstate").html("Error");
-                }
-            });
-        },
-        ParametersGetById: function (parameterspoint) {
-            NModbus.Static.ParametersData.parameterspoint = parameterspoint;
-            $.ajax({
-                url: ApiUrlParse("ParametersGetById"),
-                type: 'GET',
-                dataType: 'json',
-                contentType: 'application/json',
-                data: '{}',
-                success: function (data, textStatus, xhr) {
-                    NModbus.Static.Connect.ipaddress = data.ipaddress;
-                    NModbus.Static.Connect.slave = data.slave;
-                    NModbus.Static.Connect.number = data.number;
-                    NModbus.Static.Connect.offset = data.offset;
-                    NModbus.Static.Connect.port = data.port;
+    }
+    var Parameters = function () {
+        $.ajax({
+            url: ApiUrlParse("Parameters"),
+            type: 'GET',
+            dataType: 'json',
+            contentType: 'application/json',
+            data: '{}',
+            success: function (data, textStatus, xhr) {
+                var slctparameters = $(".slctparameter");
+                slctparameters.empty();
+                slctparameters.append("<option value=0>registered connect</option>");
+                $.each(data, function (i, item) {
+                    slctparameters.append("<option value=" + item.id + ">" + item.name + "</option>");
+                });
+            },
+            complete: function (xhr, textStatus) {
+            },
+            Error: function (data) {
+                $(".modbusconnectstate").html("Error");
+            }
+        });
+    }
+    var ParametersGetById = function (parameterspoint) {
+        NModbus.Static.ParametersData.parameterspoint = parameterspoint;
+        $.ajax({
+            url: ApiUrlParse("ParametersGetById"),
+            type: 'GET',
+            dataType: 'json',
+            contentType: 'application/json',
+            data: '{}',
+            success: function (data, textStatus, xhr) {
+                NModbus.Static.Connect.ipaddress = data.ipaddress;
+                NModbus.Static.Connect.slave = data.slave;
+                NModbus.Static.Connect.number = data.number;
+                NModbus.Static.Connect.offset = data.offset;
+                NModbus.Static.Connect.port = data.port;
 
-                    if (NModbus.Static.Connect.IsConnect) {
-                        stop();
-                    } else {
-                        start();
-                    }
-                },
-                complete: function (xhr, textStatus) {
-                },
-                Error: function (data) {
-                    $(".modbusconnectstate").html("Error");
+                if (NModbus.Static.Connect.IsConnect) {
+                    stop();
+                } else {
+                    start();
                 }
-            });
-        },
-        ParameterItems: function (parameterid) {
-            $.ajax({
-                url: ApiUrlParse("ParameterItems"),
-                type: 'GET',
-                dataType: 'json',
-                contentType: 'application/json',
-                data: '{}',
-                success: function (data, textStatus, xhr) {
-                    NModbus.Static.ParameterItemsRealData.data = JSON.stringify(data.filter(record => record.parameterid == parameterid));
-                },
-                complete: function (xhr, textStatus) {
-                },
-                Error: function (data) {
-                    $(".modbusconnectstate").html("Error");
-                }
-            });
-        },
+            },
+            complete: function (xhr, textStatus) {
+            },
+            Error: function (data) {
+                $(".modbusconnectstate").html("Error");
+            }
+        });
+    }
+    var ParameterItems = function (parameterid) {
+        $.ajax({
+            url: ApiUrlParse("ParameterItems"),
+            type: 'GET',
+            dataType: 'json',
+            contentType: 'application/json',
+            data: '{}',
+            success: function (data, textStatus, xhr) {
+                NModbus.Static.ParameterItemsRealData.data = JSON.stringify(data.filter(record => record.parameterid == parameterid));
+            },
+            complete: function (xhr, textStatus) {
+            },
+            Error: function (data) {
+                $(".modbusconnectstate").html("Error");
+            }
+        });
+    }
+    return {
+        ReadHoldingRegisters,
+        WriteHoldingRegisters,
+        Parameters,
+        ParametersGetById,
+        ParameterItems
     }
 })();
 function ApiUrlParse(endpointparameter) {
@@ -271,6 +283,7 @@ function ApiUrlParse(endpointparameter) {
 NModbus.Static = NModbus.Static || {};
 
 NModbus.Static = {
+    counter: 0,
     Connect: {
         ipaddress: null,
         port: null,
