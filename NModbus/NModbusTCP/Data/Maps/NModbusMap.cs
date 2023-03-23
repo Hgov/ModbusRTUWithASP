@@ -11,8 +11,6 @@ namespace NModbusTCP.Data.Maps
             {
                 name = request.name,
                 ipaddress = request.ipaddress,
-                number = request.number,
-                offset = request.offset,
                 port = request.port,
                 slave = request.slave
             };
@@ -25,8 +23,6 @@ namespace NModbusTCP.Data.Maps
             {
                 name = request.name,
                 ipaddress = request.ipaddress,
-                number = request.number,
-                offset = request.offset,
                 port = request.port,
                 slave = request.slave
             };
@@ -37,14 +33,15 @@ namespace NModbusTCP.Data.Maps
         {
             return new ParameterItems
             {
-                parameterid = request.parameterid,
+                parameterid = (int)request.parameterid,
                 parameterno = request.parameterno,
-                text = request.text,
-                value = request.value,
-                valueformat = request.valueformat,
+                title = request.title,
+                unit = request.unit,
+                decimalpoint = (int)request.decimalpoint,
                 description = request.description,
-                ordernumber = request.ordernumber,
+                registerquantity = (int)request.registerquantity,
                 permission = request.permission,
+                registerid=(int)request.registerid,
             };
         }
 
@@ -52,14 +49,15 @@ namespace NModbusTCP.Data.Maps
         {
             return new ParameterItemRequestData
             {
-                parameterid = request.parameterid,
+                parameterid = (int)request.parameterid,
                 parameterno = request.parameterno,
-                text = request.text,
-                value = request.value,
-                valueformat = request.valueformat,
+                title = request.title,
+                unit = request.unit,
+                decimalpoint = (int)request.decimalpoint,
                 description = request.description,
-                ordernumber = request.ordernumber,
+                registerquantity = (int)request.registerquantity,
                 permission = request.permission,
+                registerid = (int)request.registerid,
             };
         }
     }

@@ -100,12 +100,8 @@ namespace NModbusTCP.Controllers
                         isExistingData.ipaddress = request.ipaddress;
                     if (!string.IsNullOrWhiteSpace(request.port) && request.port != isExistingData.port)
                         isExistingData.port = request.port;
-                    if (!string.IsNullOrWhiteSpace(request.offset) && request.offset != isExistingData.offset)
-                        isExistingData.offset = request.offset;
                     if (!string.IsNullOrWhiteSpace(request.slave) && request.slave != isExistingData.slave)
                         isExistingData.slave = request.slave;
-                    if (!string.IsNullOrWhiteSpace(request.number) && request.number != isExistingData.number)
-                        isExistingData.number = request.number;
 
                     var data = _parametersWithParameterItemsService.Update(isExistingData);
                     _parametersWithParameterItemsService.saveChanges();

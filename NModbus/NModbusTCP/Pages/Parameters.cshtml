@@ -16,22 +16,20 @@
         <table class="table newparameter">
             <thead>
                 <tr>
-                    <th>ipaddress</th>
-                    <th>name</th>
-                    <th>number</th>
-                    <th>offset</th>
-                    <th>port</th>
-                    <th>slave</th>
+                    <th>Name</th>
+                    <th>IP Address</th>
+                    <th>Port</th>
+                    <th>Slave</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td><input type="text" class="form-control newipaddress" value="" /></td>
                     <td><input type="text" class="form-control newname" value="" /></td>
-                    <td><input type="text" class="form-control newnumber" value="" /></td>
-                    <td><input type="text" class="form-control newoffset" value="" /></td>
+                    <td><input type="text" class="form-control newipaddress" value="" /></td>
                     <td><input type="text" class="form-control newport" value="" /></td>
                     <td><input type="text" class="form-control newslave" value="" /></td>
+
+
                     <td><input type="button" class="btn btn-success" onclick="parametercreate(this)" value="Add Parameter" /></td>
                 </tr>
             </tbody>
@@ -48,7 +46,7 @@
 
 <!-- Modal -->
 <div class="modal fade parameterModal" tabindex="-1" role="dialog" aria-labelledby="parameterModal" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog" style="width:80%">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -66,6 +64,6 @@
 </div>
 
 @section Scripts {
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-    <script src="~/js/Parameters.js" asp-append-version="true"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script src="~/js/Parameters.js" asp-append-version="true"></script>
 }

@@ -69,7 +69,7 @@ namespace NModbusTCP.Controllers
                 List<ParameterItems> addList = new List<ParameterItems>();
                 foreach (var item in request)
                 {
-                    var parameterIsExisting = _parametersWithParameterItemsService.ParametersIsExisting(item.parameterid);
+                    var parameterIsExisting = _parametersWithParameterItemsService.ParametersIsExisting((int)item.parameterid);
                     if (parameterIsExisting)
                     {
                         var data = await _parametersWithParameterItemsService.AddAsync(nModbusMap.ParameterItemRequestDataToParameterItem(item));
@@ -78,7 +78,7 @@ namespace NModbusTCP.Controllers
                     }
                     else
                     {
-                        addList.Add(new ParameterItems { parameterid = item.parameterid, text = "Parameters not found!" });
+                        addList.Add(new ParameterItems { parameterid = (int)item.parameterid, title = "Parameters not found!" });
                     }
                 }
                 return Ok(addList);
@@ -102,14 +102,16 @@ namespace NModbusTCP.Controllers
                 {
                     if (!string.IsNullOrWhiteSpace(request.parameterno) && request.parameterno != isExistingData.parameterno)
                         isExistingData.parameterno = request.parameterno;
-                    if (!string.IsNullOrWhiteSpace(request.text) && request.text != isExistingData.text)
-                        isExistingData.text = request.text;
-                    if (!string.IsNullOrWhiteSpace(request.value) && request.value != isExistingData.value)
-                        isExistingData.value = request.value;
-                    if (request.valueformat != null && request.valueformat != isExistingData.valueformat)
-                        isExistingData.valueformat = request.valueformat;
-                    if (request.ordernumber != null && request.ordernumber != isExistingData.ordernumber)
-                        isExistingData.ordernumber = request.ordernumber;
+                    if (request.registerid != null && request.registerid != isExistingData.registerid)
+                        isExistingData.registerid = (int)request.registerid;
+                    if (!string.IsNullOrWhiteSpace(request.title) && request.title != isExistingData.title)
+                        isExistingData.title = request.title;
+                    if (!string.IsNullOrWhiteSpace(request.unit) && request.unit != isExistingData.unit)
+                        isExistingData.unit = request.unit;
+                    if (request.decimalpoint != null && request.decimalpoint != isExistingData.decimalpoint)
+                        isExistingData.decimalpoint = (int)request.decimalpoint;
+                    if (request.registerquantity != null && request.registerquantity != isExistingData.registerquantity)
+                        isExistingData.registerquantity = (int)request.registerquantity;
                     if (!string.IsNullOrWhiteSpace(request.description) && request.description != isExistingData.description)
                         isExistingData.description = request.description;
                     if (!string.IsNullOrWhiteSpace(request.permission) && request.permission != isExistingData.permission)
